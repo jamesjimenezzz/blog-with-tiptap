@@ -35,6 +35,7 @@ export default function RichTextEditor({
       Highlight,
     ],
     content: content,
+    immediatelyRender: false,
     editorProps: {
       attributes: {
         class: "min-h-[230px] border rounded-md bg-slate-50 py-2 px-3",

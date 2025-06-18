@@ -24,10 +24,10 @@ const Trending = () => {
               </header>
               <section className="mt-5">
                 <div className="w-lg flex flex-col gap-5">
-                  <header className="text-2xl font-semibold">
+                  <header className="text-2xl font-bold">
                     Welcome to Our Blog
                   </header>
-                  <p className="text-muted-foreground">
+                  <p className="text-sm text-muted-foreground">
                     This is the first blog post on our amazing blogging
                     platform. Here you can share your thoughts, ideas, and
                     stories with the world. Writing is a powerful medium for

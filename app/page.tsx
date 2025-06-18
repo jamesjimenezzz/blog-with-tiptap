@@ -2,6 +2,8 @@ import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import Trending from "./Trending";
 import React from "react";
+import { useAuth } from "@clerk/nextjs";
+import { redirect } from "next/navigation";
 
 const Home = () => {
   return (
