@@ -1,7 +1,12 @@
+"use client";
+import RichTextEditor from "@/components/rich-text-editor";
 import { Button } from "@/components/ui/button";
-import React from "react";
+import React, { useState } from "react";
 
 const Edit = () => {
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+
   return (
     <div className="max-w-3xl mt-20 mx-auto  h-screen flex flex-col ">
       <main className="flex justify-between items-center border-b  pb-8">
@@ -34,6 +39,8 @@ const Edit = () => {
             type="text"
             placeholder="Title"
             name="title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
             className="w-full text-muted-foreground text-4xl font-bold outline-none  py-2  px-1.5 rounded-lg focus:border-b-1 focus:border focus:border-black"
           />
 
@@ -55,11 +62,7 @@ const Edit = () => {
               />
             </div>
           </label>
-          <textarea
-            placeholder="Content"
-            name="content"
-            className="w-full  border-gray-300 text-xl font-semibold outline-none py-10 h-96   px-1.5  "
-          />
+          <RichTextEditor content={content} onChange={setContent} />
         </form>
       </section>
     </div>
