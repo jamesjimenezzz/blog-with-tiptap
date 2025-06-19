@@ -1,4 +1,4 @@
-"use server";
+"use client";
 
 import React from "react";
 import { getPostById } from "@/actions/actions";
@@ -7,10 +7,27 @@ import Image from "next/image";
 import { BookmarkPlus } from "lucide-react";
 import { CirclePlay } from "lucide-react";
 import { ExternalLink } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
+import { useDeletePost, useGetPostById } from "@/hooks/useActions";
+import Loader from "@/components/Loader";
+const StoryById = () => {
+  const { id } = useParams<{ id: string }>();
+  const { data: post, isLoading, isError } = useGetPostById(id);
+  const { mutate: deletePost } = useDeletePost();
+  const router = useRouter();
 
-const StoryById = async ({ params }: { params: Promise<{ id: string }> }) => {
-  const { id } = await params;
-  const post = await getPostById(id);
+  const handleDelete = () => {
+    deletePost(id, {
+      onSuccess: () => {
+        router.push("/my-stories");
+      },
+    });
+  };
+
+  if (isLoading) return <Loader />;
+  if (isError) return <div>Error</div>;
 
   return (
     <>
@@ -52,10 +69,18 @@ const StoryById = async ({ params }: { params: Promise<{ id: string }> }) => {
             </p>
           </div>
 
-          <div className="flex gap-3 text-muted-foreground mt-5 border-y py-4">
-            <BookmarkPlus className="w-5 h-5" />
-            <CirclePlay className="w-5 h-5" />
-            <ExternalLink className="w-5 h-5" />
+          <div className="flex justify-between items-center mt-5 border-y py-4">
+            <div className="flex gap-3 text-muted-foreground ">
+              <BookmarkPlus className="w-5 h-5" />
+              <CirclePlay className="w-5 h-5" />
+              <ExternalLink className="w-5 h-5" />
+            </div>
+            <div className="flex gap-3 items-center">
+              <Link href={`/edit/${post?.id}`}>
+                <Button variant="outline">Edit</Button>
+              </Link>
+              <Button onClick={() => handleDelete()}>Delete</Button>
+            </div>
           </div>
 
           <div className="my-15">

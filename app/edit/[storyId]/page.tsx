@@ -1,0 +1,150 @@
+"use client";
+import React, { useEffect, useState } from "react";
+import { useGetPostById } from "@/hooks/useActions";
+import { useParams, useRouter } from "next/navigation";
+import RichTextEditor from "@/components/rich-text-editor";
+import Header from "@/components/Header";
+import { Button } from "@/components/ui/button";
+import { useUpdatePost } from "@/hooks/useActions";
+
+const EditPage = () => {
+  const { storyId } = useParams<{ storyId: string }>();
+  const { data: post, isLoading, isError } = useGetPostById(storyId);
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [preview, setPreview] = useState<string | null>(null);
+  const { mutate: updatePost } = useUpdatePost();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (post) {
+      setTitle(post.title);
+      setContent(post.content);
+      setPreview(post.picture);
+    }
+  }, [post]);
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!title || !content || !preview) {
+      return;
+    }
+
+    updatePost(
+      {
+        id: storyId,
+        title: title,
+        content: content,
+        slug: title,
+        picture: preview,
+      },
+      {
+        onSuccess: () => {
+          router.push(`/${post?.slug}/${storyId}`);
+        },
+      }
+    );
+  };
+
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error</div>;
+
+  return (
+    <div>
+      <Header />
+      <div className="max-w-3xl mt-20 mx-auto  h-screen flex flex-col ">
+        <main className="flex justify-between items-center border-b  pb-8">
+          <header className="flex items-center gap-5">
+            <div className="rounded-full bg-green-500 px-4 py-2 w-fit">P</div>
+            <div>
+              <h1 className="text-2xl font-bold">Write your story</h1>
+              <p className="text-muted-foreground">
+                Write your story and share it with the world.
+              </p>
+            </div>
+          </header>
+
+          <header>
+            <Button className="bg-green-600 rounded-full text-white">
+              Publish Now
+            </Button>
+          </header>
+        </main>
+
+        <section className="mt-5">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-10">
+            <input
+              type="text"
+              placeholder="Title"
+              name="title"
+              defaultValue={post?.title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="w-full text-muted-foreground text-4xl font-bold outline-none  py-2  px-1.5 rounded-lg focus:border-b-1 focus:border focus:border-black"
+            />
+
+            <label htmlFor={`${preview === null ? "image" : ""}`}>
+              <div className="cursor-pointer flex flex-col w-lg mx-auto  items-center justify-center border-2 border-dashed border-gray-300 rounded-lg py-20 ">
+                {preview ? (
+                  <div className="flex flex-col items-center gap-4">
+                    <img
+                      src={preview}
+                      alt="preview"
+                      className=" w-full h-auto rounded-md object-cover"
+                    />
+                  </div>
+                ) : (
+                  <>
+                    <span className="text-4xl text-gray-400">+</span>
+
+                    <span className="text-sm font-medium text-gray-700 mt-5">
+                      Add an image
+                    </span>
+                    <span className="text-xs text-gray-500">
+                      Upload an image to make your story stand out
+                    </span>
+                  </>
+                )}
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onloadend = () => {
+                        setPreview(reader.result as string);
+                      };
+                      reader.readAsDataURL(file);
+                    }
+                  }}
+                  className="hidden"
+                  id="image"
+                />
+              </div>
+            </label>
+            <div className="items-center flex justify-center">
+              <Button
+                onClick={() => setPreview(null)}
+                className="w-fit items-center"
+              >
+                Remove
+              </Button>
+            </div>
+            <RichTextEditor
+              content={post?.content || ""}
+              onChange={setContent}
+            />
+            <Button
+              type="submit"
+              className="bg-green-600 rounded-full text-white"
+            >
+              Publish Now
+            </Button>
+          </form>
+        </section>
+      </div>
+    </div>
+  );
+};
+
+export default EditPage;
