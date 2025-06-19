@@ -5,8 +5,15 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-const Story = ({ post }: { post: Post & { author: User } }) => {
-  const content = post.content.slice(0, 100);
+interface StoryProps {
+  post: Post & { author: User };
+}
+
+const Story = ({ post }: StoryProps) => {
+  let content = post.content;
+  if (content.length > 300) {
+    content = content.slice(0, 300) + "...";
+  }
 
   return (
     <>

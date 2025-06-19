@@ -1,19 +1,28 @@
+"use client";
 import React from "react";
 import Header from "@/components/Header";
 import { useAuth } from "@clerk/nextjs";
-import { getPostsByUserId } from "@/actions/actions";
 import Story from "./Story";
-import { auth } from "@clerk/nextjs/server";
+import { useGetPostsByUserId } from "@/hooks/useActions";
+import Loader from "@/components/Loader";
 
-const Stories = async () => {
-  const { userId } = await auth();
-  const posts = await getPostsByUserId(userId as string);
+const Stories = () => {
+  const { userId } = useAuth();
+  const {
+    data: posts,
+    isLoading,
+    isError,
+  } = useGetPostsByUserId(userId as string);
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <>
       <Header />
       <main className="max-w-4xl mx-auto  ">
-        {posts.map((post) => {
+        {posts?.map((post) => {
           return <Story key={post.id} post={post} />;
         })}
       </main>
