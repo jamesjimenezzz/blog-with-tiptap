@@ -33,6 +33,7 @@ model Post {
   id String @id @default(uuid())
   title String
   content String
+  slug String @unique
   picture String?
   authorId String
   author User @relation(fields: [authorId], references: [id])

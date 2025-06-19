@@ -11,20 +11,17 @@ const Edit = () => {
   const { userId } = useAuth();
   console.log(userId);
 
-  if (!userId) {
-    redirect("/sign-in");
-  }
-
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [preview, setPreview] = useState<string | null>(null);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const slug = title.toLowerCase().replace(/ /g, "-");
     setTitle("");
     setContent("");
     setPreview(null);
-    createPost(userId, title, content, preview || "");
+    createPost(userId as string, title, content, preview || "", slug);
   };
 
   return (
