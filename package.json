@@ -13,6 +13,7 @@
     "@neondatabase/serverless": "^1.0.1",
     "@prisma/adapter-neon": "^6.10.0",
     "@prisma/client": "^6.10.0",
+    "@radix-ui/react-dropdown-menu": "^2.1.15",
     "@radix-ui/react-menubar": "^1.1.15",
     "@radix-ui/react-slot": "^1.2.3",
     "@radix-ui/react-toggle": "^1.1.9",

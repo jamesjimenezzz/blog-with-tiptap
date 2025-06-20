@@ -2,7 +2,7 @@
 import prisma from "@/lib/db";
 import { revalidatePath } from "next/cache";
 
-export const getPostsByUserId = async (id: string) => {
+export const getPostsByUserId = async (id: string, sort: "asc" | "desc") => {
   try {
     return await prisma.post.findMany({
       where: {
@@ -12,7 +12,7 @@ export const getPostsByUserId = async (id: string) => {
         author: true,
       },
       orderBy: {
-        createdAt: "desc",
+        updatedAt: sort,
       },
     });
   } catch (error) {

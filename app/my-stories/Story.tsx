@@ -40,7 +40,11 @@ const Story = ({ post }: StoryProps) => {
                 </p>
                 <p className="text-muted-foreground">•</p>
                 <p className="text-sm text-muted-foreground">
-                  {post.createdAt.toLocaleDateString()}
+                  {post.updatedAt.toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
                 </p>
               </div>
             </header>

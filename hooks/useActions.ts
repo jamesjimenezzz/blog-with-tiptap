@@ -7,10 +7,10 @@ import {
   deletePost,
 } from "@/actions/actions";
 
-export const useGetPostsByUserId = (id: string) => {
+export const useGetPostsByUserId = (id: string, sort: "asc" | "desc") => {
   return useQuery({
-    queryKey: ["posts", id],
-    queryFn: () => getPostsByUserId(id),
+    queryKey: ["posts", id, sort],
+    queryFn: () => getPostsByUserId(id, sort),
   });
 };
 
