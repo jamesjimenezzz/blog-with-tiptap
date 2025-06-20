@@ -70,3 +70,20 @@ export const useDeletePost = () => {
     },
   });
 };
+
+const summarize = async (text: string) => {
+  const res = await fetch("/api/summarize", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text }),
+  });
+
+  const { summary } = await res.json();
+  return summary;
+};
+
+export const useSummarize = () => {
+  return useMutation({
+    mutationFn: (text: string) => summarize(text),
+  });
+};

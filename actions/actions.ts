@@ -11,6 +11,9 @@ export const getPostsByUserId = async (id: string) => {
       include: {
         author: true,
       },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
   } catch (error) {
     console.error("Error: Failed to get posts by user id:", error);

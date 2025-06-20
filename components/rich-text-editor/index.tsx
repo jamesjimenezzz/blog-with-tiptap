@@ -2,7 +2,7 @@
 
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import MenuBar from "./menu-bar";
 import TextAlign from "@tiptap/extension-text-align";
 import Highlight from "@tiptap/extension-highlight";
@@ -15,6 +15,8 @@ export default function RichTextEditor({
   content,
   onChange,
 }: RichTextEditorProps) {
+  const isInternalUpdate = useRef(false);
+
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -43,9 +45,20 @@ export default function RichTextEditor({
     },
     onUpdate: ({ editor }) => {
       // console.log(editor.getHTML());
+      isInternalUpdate.current = true;
       onChange(editor.getHTML());
+      // Reset the flag after a short delay
+      setTimeout(() => {
+        isInternalUpdate.current = false;
+      }, 0);
     },
   });
+
+  useEffect(() => {
+    if (editor && content !== editor.getHTML() && !isInternalUpdate.current) {
+      editor.commands.setContent(content);
+    }
+  }, [content, editor]);
 
   return (
     <div>

@@ -4,6 +4,7 @@ import { Post, User } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import placeholder from "@/public/placeholder.jpg";
 
 interface StoryProps {
   post: Post & { author: User };
@@ -57,7 +58,7 @@ const Story = ({ post }: StoryProps) => {
 
                   <Image
                     className="rounded-lg w-40 h-40 object-cover flex items-center justify-center overflow-hidden"
-                    src={post.picture || "https://placehold.co/600x400"}
+                    src={post.picture || placeholder}
                     alt={post.title}
                     width={200}
                     height={200}

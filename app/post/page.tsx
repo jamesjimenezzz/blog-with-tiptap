@@ -1,23 +1,30 @@
 "use client";
 import RichTextEditor from "@/components/rich-text-editor";
 import { Button } from "@/components/ui/button";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "@/components/Header";
 import { useAuth } from "@clerk/nextjs";
 import { createPost } from "@/actions/actions";
-import { redirect } from "next/navigation";
+import { useSummarize } from "@/hooks/useActions";
+import { toast } from "sonner";
 
 const Edit = () => {
   const { userId } = useAuth();
-  console.log(userId);
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [preview, setPreview] = useState<string | null>(null);
+  const { mutate: summarize, isPending, data: summary } = useSummarize();
+  useEffect(() => {
+    if (summary) {
+      setContent(summary);
+    }
+  }, [summary]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const slug = title.toLowerCase().replace(/ /g, "-");
+    toast.success("Post created successfully");
     setTitle("");
     setContent("");
     setPreview(null);
@@ -105,13 +112,33 @@ const Edit = () => {
                 Remove
               </Button>
             </div>
-            <RichTextEditor content={content} onChange={setContent} />
-            <Button
-              type="submit"
-              className="bg-green-600 rounded-full text-white"
-            >
-              Publish Now
-            </Button>
+            <RichTextEditor content={content} onChange={(e) => setContent(e)} />
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <Button
+                  disabled={content.trim().length < 9}
+                  type="button"
+                  variant={"outline"}
+                  onClick={() => summarize(content)}
+                  className={` cursor-pointer transition-all duration-400  text-sm ${
+                    content.trim().length > 7 ? "text-black   " : ""
+                  }`}
+                >
+                  {isPending ? "Summarizing..." : "Summarize"}
+                </Button>
+              </div>
+              <Button
+                onClick={() => {
+                  if (content.trim().length < 9 || title.trim().length < 3) {
+                    return toast.error("Please fill in all fields");
+                  }
+                }}
+                type="submit"
+                className="bg-green-600 w-fit rounded-full text-white"
+              >
+                Publish Now
+              </Button>
+            </div>
           </form>
         </section>
       </div>
