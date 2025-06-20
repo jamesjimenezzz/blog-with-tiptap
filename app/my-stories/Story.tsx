@@ -38,8 +38,8 @@ const Story = ({ post }: StoryProps) => {
                 <p className="font-semibold">
                   {post.author.firstName} {post.author.lastName}
                 </p>
-                <p>•</p>
-                <p className="text-muted-foreground">
+                <p className="text-muted-foreground">•</p>
+                <p className="text-sm text-muted-foreground">
                   {post.createdAt.toLocaleDateString()}
                 </p>
               </div>

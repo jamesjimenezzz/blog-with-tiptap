@@ -21,7 +21,7 @@ const Stories = () => {
   return (
     <>
       <Header />
-      <main className="max-w-4xl mx-auto  ">
+      <main className="max-w-4xl flex pb-20 flex-col gap-20 mx-auto  ">
         {posts?.map((post) => {
           return <Story key={post.id} post={post} />;
         })}

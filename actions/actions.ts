@@ -25,8 +25,8 @@ export const createPost = async (
   id: string,
   title: string,
   content: string,
-  picture: string,
-  slug: string
+  slug: string,
+  picture: string
 ) => {
   try {
     return await prisma.post.create({
