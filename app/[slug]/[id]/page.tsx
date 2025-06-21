@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { getPostById } from "@/actions/actions";
 import Header from "@/components/Header";
 import Image from "next/image";
@@ -8,6 +8,7 @@ import { BookmarkPlus } from "lucide-react";
 import { CirclePlay } from "lucide-react";
 import { ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Heart } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useDeletePost, useGetPostById } from "@/hooks/useActions";
@@ -17,6 +18,7 @@ const StoryById = () => {
   const { data: post, isLoading, isError } = useGetPostById(id);
   const { mutate: deletePost } = useDeletePost();
   const router = useRouter();
+  const [isLiked, setIsLiked] = useState(false);
 
   const handleDelete = () => {
     deletePost(id, {
@@ -71,7 +73,12 @@ const StoryById = () => {
 
           <div className="flex justify-between items-center mt-5 border-y py-4">
             <div className="flex gap-3 text-muted-foreground ">
-              <BookmarkPlus className="w-5 h-5" />
+              <Heart
+                onClick={() => setIsLiked(!isLiked)}
+                className={`${
+                  isLiked ? "fill-pink-500 text-pink-500" : ""
+                } w-5 h-5 cursor-pointer`}
+              />
               <CirclePlay className="w-5 h-5" />
               <ExternalLink className="w-5 h-5" />
             </div>
