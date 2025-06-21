@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getPostById } from "@/actions/actions";
 import Header from "@/components/Header";
 import Image from "next/image";
@@ -13,12 +13,39 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useDeletePost, useGetPostById } from "@/hooks/useActions";
 import Loader from "@/components/Loader";
+import LikeButton from "@/components/LikeButton";
+import { useLikePost, useUnlikePost, useGetLikeCount } from "@/hooks/useLike";
+import { useUser } from "@clerk/nextjs";
+
 const StoryById = () => {
   const { id } = useParams<{ id: string }>();
+  const { user } = useUser();
   const { data: post, isLoading, isError } = useGetPostById(id);
   const { mutate: deletePost } = useDeletePost();
   const router = useRouter();
+  const { mutate: likePost } = useLikePost(user?.id || "", post?.id!);
+  const { mutate: unlikePost } = useUnlikePost(user?.id || "", post?.id!);
+  const { data: likeCount } = useGetLikeCount(post?.id!);
+
   const [isLiked, setIsLiked] = useState(false);
+
+  useEffect(() => {
+    if (post && user) {
+      setIsLiked(post?.likedBy.some((u) => u.id === user.id) ?? false);
+    }
+  }, [post, user]);
+
+  const handleLike = () => {
+    if (!user) return;
+
+    setIsLiked(!isLiked);
+
+    if (isLiked) {
+      unlikePost();
+    } else {
+      likePost();
+    }
+  };
 
   const handleDelete = () => {
     deletePost(id, {
@@ -73,11 +100,11 @@ const StoryById = () => {
 
           <div className="flex justify-between items-center mt-5 border-y py-4">
             <div className="flex gap-3 text-muted-foreground ">
-              <Heart
-                onClick={() => setIsLiked(!isLiked)}
-                className={`${
-                  isLiked ? "fill-pink-500 text-pink-500" : ""
-                } w-5 h-5 cursor-pointer`}
+              <LikeButton
+                onClick={handleLike}
+                isLiked={isLiked}
+                className="w-5 h-5"
+                likeCount={likeCount ?? 0}
               />
               <CirclePlay className="w-5 h-5" />
               <ExternalLink className="w-5 h-5" />
@@ -92,7 +119,7 @@ const StoryById = () => {
 
           <div className="my-15">
             <Image
-              src={post?.picture || ""}
+              src={post?.picture! || ""}
               alt="post"
               width={1000}
               height={1000}

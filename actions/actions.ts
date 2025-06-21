@@ -52,6 +52,7 @@ export const getPostById = async (id: string) => {
       },
       include: {
         author: true,
+        likedBy: true,
       },
     });
   } catch (error) {
@@ -94,6 +95,83 @@ export const deletePost = async (id: string) => {
     });
   } catch (error) {
     console.error("Error: Failed to delete post:", error);
+    return null;
+  }
+};
+
+export const likePost = async (userId: string, postId: string) => {
+  try {
+    const post = await prisma.post.update({
+      where: {
+        id: postId,
+      },
+      data: {
+        likedBy: {
+          connect: {
+            id: userId,
+          },
+        },
+      },
+      select: {
+        _count: {
+          select: {
+            likedBy: true,
+          },
+        },
+      },
+    });
+    return post._count.likedBy;
+  } catch (error) {
+    console.error("Error: Failed to like post:", error);
+    return null;
+  }
+};
+
+export const unlikePost = async (userId: string, postId: string) => {
+  try {
+    const post = await prisma.post.update({
+      where: {
+        id: postId,
+      },
+      data: {
+        likedBy: {
+          disconnect: {
+            id: userId,
+          },
+        },
+      },
+      select: {
+        _count: {
+          select: {
+            likedBy: true,
+          },
+        },
+      },
+    });
+    return post._count.likedBy;
+  } catch (error) {
+    console.error("Error: Failed to unlike post:", error);
+    return null;
+  }
+};
+
+export const getLikeCount = async (postId: string) => {
+  try {
+    const data = await prisma.post.findUnique({
+      where: {
+        id: postId,
+      },
+      select: {
+        _count: {
+          select: {
+            likedBy: true,
+          },
+        },
+      },
+    });
+    return data?._count.likedBy ?? 0;
+  } catch (error) {
+    console.error("Error: Failed to get like count:", error);
     return null;
   }
 };

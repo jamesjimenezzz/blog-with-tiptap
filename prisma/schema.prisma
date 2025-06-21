@@ -22,6 +22,7 @@ model User {
  lastName String?
  profileImage String?
   Posts Post[]
+  likedPosts Post[] @relation("LikedPosts")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
  
@@ -39,4 +40,5 @@ model Post {
   author User @relation(fields: [authorId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  likedBy User[] @relation("LikedPosts")
 }

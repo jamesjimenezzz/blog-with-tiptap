@@ -16,13 +16,13 @@ const SummarizingButton = ({ content, summarize, isPending }: Props) => {
     <Button
       disabled={content.trim().length < 9}
       type="button"
-      variant={"outline"}
+      variant={"default"}
       onClick={handleClick}
       className={` cursor-pointer transition-all duration-400  text-sm ${
-        content.trim().length > 7 ? "text-black   " : ""
+        content.trim().length > 7 ? "text-white   " : ""
       }`}
     >
-      {isPending ? "Summarizing..." : "Summarize"}
+      {isPending ? "Loading..." : "Use AI to create content"}
     </Button>
   );
 };
